@@ -24,17 +24,6 @@ app.post('/posts', async (req, res) => {
 	res.json(result);
 });
 
-app.get('/usuarios', reportQuery, verifyToken, async (req, res) => {
-	try {
-		const token = req.header('Authorization').split('Bearer ')[1];
-		const { email } = jwt.decode(token);
-		const usuario = await getDataUser(email);
-		res.json(usuario);
-	} catch (error) {
-		res.status(500).send(error);
-	}
-});
-
 app.post('/login', checkCrede, reportQuery, async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -45,6 +34,32 @@ app.post('/login', checkCrede, reportQuery, async (req, res) => {
 		res.status(500).send(error);
 	}
 });
+
+app.get('/usuarios', reportQuery, verifyToken, async (req, res) => {
+	try {
+		const token = req.header('Authorization').split('Bearer ')[1];
+		const { email } = jwt.decode(token);
+		const usuario = await getDataUser(email);
+		res.json(usuario);
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+app.get('/posts/:id', async (req, res) => {
+	try {
+	  const postId = req.params.id;
+	  const post = await getPostById(postId);
+  
+	  if (!post) {
+		return res.status(404).json({ error: 'Post not found' });
+	  }
+  
+	  res.json(post);
+	} catch (error) {
+	  console.error('Error al obtener el post por ID:', error);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
 
 app.post('/usuarios', reportQuery, async (req, res) => {
 	try {

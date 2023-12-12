@@ -18,7 +18,7 @@ const getPosts = async () => {
 
 const insertPost = async (post) => {
 	const values = Object.values(post);
-	const consult = 'insert into posts values (default, $1, $2, $4, $3 )';
+	const consult = 'insert into posts values (default, $1, $2, $3, $4)';
 	const result = await pool.query(consult, values);
 	return result;
 };
@@ -36,7 +36,17 @@ const getDataUser = async (email) => {
 	delete usuario.password;
 	return usuario;
 };
-
+const getPostById = async (postId) => {
+	const values = [postId];
+	const consulta = 'SELECT * FROM posts WHERE id = $1';
+	const { rows, rowCount } = await pool.query(consulta, values);
+  
+	if (!rowCount) {
+	  return null; // No se encontró ningún post con ese ID
+	}
+  
+	return rows[0];
+  };
 const verifyCrede = async (email, password) => {
 	const values = [email];
 	const consulta = 'SELECT * FROM usuarios WHERE email = $1';
@@ -59,4 +69,4 @@ const registrarUsuario = async (usuario) => {
 	await pool.query(consulta, values);
 };
 
-module.exports = { getPosts, insertPost, verifyCrede, getDataUser, registrarUsuario };
+module.exports = { getPosts, getPostById, insertPost, verifyCrede, getDataUser, registrarUsuario };
