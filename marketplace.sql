@@ -1,6 +1,7 @@
 CREATE DATABASE marketplace;
 CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
+  usuario_id INTEGER REFERENCES usuarios(id),
   titulo VARCHAR(1000),
   img TEXT,
   descripcion TEXT,
