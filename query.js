@@ -4,10 +4,10 @@ const { password } = require('pg/lib/defaults');
 const bcrypt = require('bcryptjs');
 
 const pool = new Pool({
-	host: 'localhost',
-	user: 'postgres',
-	password: 'postgres',
-	database: 'marketplace',
+	host: 'pg-clvhtrla73kc73bq03j0-a.oregon-postgres.render.com',
+	user: 'registro_ul3l_user',
+	password: '432VFfVx1c6WhSarR2h4jCe3BjItbCbZ',
+	database: 'registro_ul3l',
 	allowExitOnIdle: true,
 });
 

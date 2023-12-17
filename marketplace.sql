@@ -9,6 +9,7 @@ CREATE TABLE posts (
 );
 CREATE TABLE usuarios (
 	id SERIAL PRIMARY KEY,
+  nombre VARCHAR(50)
 	email VARCHAR(255),
 	password TEXT
 );
