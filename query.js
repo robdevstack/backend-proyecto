@@ -3,12 +3,13 @@ const { query } = require('express');
 const { password } = require('pg/lib/defaults');
 const bcrypt = require('bcryptjs');
 
+const DBConnLink ='postgres://registro_ul3l_user:432VFfVx1c6WhSarR2h4jCe3BjItbCbZ@dpg-clvhtrla73kc73bq03j0-a.oregon-postgres.render.com/registro_ul3l'
+
 const pool = new Pool({
-	host: 'dpg-clvhtrla73kc73bq03j0-a.oregon-postgres.render.com',
-	user: 'registro_ul3l_user',
-	password: '432VFfVx1c6WhSarR2h4jCe3BjItbCbZ',
-	database: 'registro_ul3l',
-	allowExitOnIdle: true,
+	connectionString: DBConnLink,
+	ssl: {
+		rejectUnauthorized: false
+	},
 });
 
 const getPosts = async () => {
