@@ -47,20 +47,19 @@ app.get('/usuarios', reportQuery, verifyToken, async (req, res) => {
 });
 app.get('/posts/:id', async (req, res) => {
 	try {
-		const postId = req.params.id;
-		const post = await getPostById(postId);
-
-		if (!post) {
-			// Puedes enviar un mensaje personalizado en lugar de un error 404
-			return res.json({ message: 'Post not found' });
-		}
-
-		res.json(post);
+	  const postId = req.params.id;
+	  const post = await getPostById(postId);
+  
+	  if (!post) {
+		return res.status(404).json({ error: 'Post not found' });
+	  }
+  
+	  res.json(post);
 	} catch (error) {
-		console.error('Error al obtener el post por ID:', error);
-		res.status(500).json({ error: 'Internal Server Error' });
+	  console.error('Error al obtener el post por ID:', error);
+	  res.status(500).json({ error: 'Internal Server Error' });
 	}
-});
+  });
 
 app.post('/usuarios', reportQuery, async (req, res) => {
 	try {
