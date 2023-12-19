@@ -12,18 +12,33 @@ const pool = new Pool({
 	},
 });
 
-const getPosts = async () => {
-	const result = await pool.query('select * from posts');
+const getPosts = async (usuarioId) => {
+	const consulta = 'SELECT * FROM posts WHERE usuario_id = $1';
+	const result = await pool.query(consulta, [usuarioId]);
 	return result.rows;
-};
+  };
 
 const insertPost = async (post) => {
-	const values = Object.values(post);
-	const consult = 'insert into posts values (default, $1, $2, $3, $4)';
-	const result = await pool.query(consult, values);
-	return result;
-};
-
+	try {
+	  const usuarioId = post.usuario_id; // Asume que usuario_id está en el objeto post
+	  const { titulo, img, descripcion, precio } = post;
+  
+	  const consulta = 'INSERT INTO posts (usuario_id, titulo, img, descripcion, precio) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+	  const values = [usuarioId, titulo, img, descripcion, precio];
+  
+	  const result = await pool.query(consulta, values);
+  
+	  if (result.rows.length > 0) {
+		// Devuelve el nuevo post insertado
+		return result.rows[0];
+	  } else {
+		throw new Error('Error al insertar el post. No se devolvió ningún resultado.');
+	  }
+	} catch (error) {
+	  console.error('Error en la función insertPost:', error);
+	  throw error;
+	}
+  };
 const getDataUser = async (email) => {
 	const values = [email];
 	const consulta = 'SELECT * FROM usuarios WHERE email =$1';

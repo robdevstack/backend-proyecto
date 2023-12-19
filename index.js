@@ -14,10 +14,21 @@ morgan(app);
 app.use(cors());
 app.use(express.json());
 
-app.get('/posts', async (req, res) => {
-	const post = await getPosts();
-	res.json(post);
-});
+app.get('/posts', verifyToken, async (req, res) => {
+	try {
+	  const token = req.header('Authorization').split('Bearer ')[1];
+	  const { email } = jwt.decode(token);
+	  
+	  // Obtener el ID del usuario autenticado
+	  const usuario = await getDataUser(email);
+  
+	  const posts = await getPosts(usuario.id);
+	  res.json(posts);
+	} catch (error) {
+	  console.error('Error al obtener los posts:', error.message);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
 app.post('/posts', async (req, res) => {
 	const post = req.body;
 	const result = await insertPost(post);
