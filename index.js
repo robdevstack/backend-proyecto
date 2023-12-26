@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan-body');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { getPosts, insertPost } = require('./query');
+const { getPosts, insertPost, getAllPosts } = require('./query');
 const { verifyCrede, getDataUser, registrarUsuario } = require('./query');
 const { checkCrede, verifyToken, reportQuery } = require('./middlewares');
 require('dotenv').config();
@@ -14,6 +14,15 @@ morgan(app);
 app.use(cors());
 app.use(express.json());
 
+app.get('/all-posts', async (req, res) => {
+	try {
+	  const posts = await getAllPosts(); // Utiliza la nueva función
+	  res.json(posts);
+	} catch (error) {
+	  console.error('Error al obtener todos los posts:', error.message);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
 app.get('/posts', verifyToken, async (req, res) => {
 	try {
 	  const token = req.header('Authorization').split('Bearer ')[1];

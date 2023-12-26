@@ -11,7 +11,11 @@ const pool = new Pool({
 		rejectUnauthorized: false
 	},
 });
-
+const getAllPosts = async () => {
+	const consulta = 'SELECT * FROM posts';
+	const result = await pool.query(consulta);
+	return result.rows;
+  };
 const getPosts = async (usuarioId) => {
 	const consulta = 'SELECT * FROM posts WHERE usuario_id = $1';
 	const result = await pool.query(consulta, [usuarioId]);
@@ -85,4 +89,4 @@ const registrarUsuario = async (usuario) => {
     await pool.query(consulta, values);
 };
 
-module.exports = { getPosts, getPostById, insertPost, verifyCrede, getDataUser, registrarUsuario };
+module.exports = { getPosts, getPostById, insertPost, getAllPosts, verifyCrede, getDataUser, registrarUsuario };
