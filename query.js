@@ -43,19 +43,31 @@ const insertPost = async (post) => {
 	  throw error;
 	}
   };
-const getDataUser = async (email) => {
-	const values = [email];
-	const consulta = 'SELECT * FROM usuarios WHERE email =$1';
-	const {
-		rows: [usuario],
-		rowCount,
-	} = await pool.query(consulta, values);
+  const getDataUserById = async (userId) => {
+	const values = [userId];
+	const consulta = 'SELECT id, nombre, email FROM usuarios WHERE id = $1';
+	const { rows, rowCount } = await pool.query(consulta, values);
+  
 	if (!rowCount) {
-		throw { code: 404, message: 'No se encontro usuario con ese email' };
+	  throw { code: 404, message: 'No se encontró usuario con ese ID' };
 	}
-	delete usuario.password;
+  
+	const usuario = rows[0];
 	return usuario;
-};
+  };
+  const getDataUser = async (email) => {
+	const values = [email];
+	const consulta = 'SELECT id, nombre, email FROM usuarios WHERE email = $1';
+	const { rows, rowCount } = await pool.query(consulta, values);
+  
+	if (!rowCount) {
+	  throw { code: 404, message: 'No se encontró usuario con ese email' };
+	}
+  
+	const usuario = rows[0]; // Extraer el primer usuario del resultado
+	console.log('Usuario:', usuario); // Agrega esta línea para imprimir el usuario en la consola
+	return usuario;
+  };
 const getPostById = async (postId) => {
 	const values = [postId];
 	const consulta = 'SELECT * FROM posts WHERE id = $1';
@@ -89,4 +101,4 @@ const registrarUsuario = async (usuario) => {
     await pool.query(consulta, values);
 };
 
-module.exports = { getPosts, getPostById, insertPost, getAllPosts, verifyCrede, getDataUser, registrarUsuario };
+module.exports = { getPosts, getDataUserById, getPostById, insertPost, getAllPosts, verifyCrede, getDataUser, registrarUsuario };

@@ -3,7 +3,7 @@ const morgan = require('morgan-body');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const { getPosts, insertPost, getAllPosts } = require('./query');
-const { verifyCrede, getDataUser, registrarUsuario } = require('./query');
+const { verifyCrede, getDataUser, getDataUserById, registrarUsuario } = require('./query');
 const { checkCrede, verifyToken, reportQuery } = require('./middlewares');
 require('dotenv').config();
 
@@ -14,6 +14,16 @@ morgan(app);
 app.use(cors());
 app.use(express.json());
 
+app.get('/usuarios/:id', async (req, res) => {
+	try {
+	  const userId = req.params.id;
+	  const user = await getDataUserById(userId);
+	  res.json(user);
+	} catch (error) {
+	  console.error('Error al obtener usuario por ID:', error);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
 app.get('/all-posts', async (req, res) => {
 	try {
 	  const posts = await getAllPosts(); // Utiliza la nueva función
