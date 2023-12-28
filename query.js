@@ -24,7 +24,7 @@ const getPosts = async (usuarioId) => {
 
 const insertPost = async (post) => {
 	try {
-	  const usuarioId = post.usuario_id; // Asume que usuario_id está en el objeto post
+	  const usuarioId = post.usuario_id; 
 	  const { titulo, img, descripcion, precio } = post;
   
 	  const consulta = 'INSERT INTO posts (usuario_id, titulo, img, descripcion, precio) VALUES ($1, $2, $3, $4, $5) RETURNING *';
@@ -33,7 +33,6 @@ const insertPost = async (post) => {
 	  const result = await pool.query(consulta, values);
   
 	  if (result.rows.length > 0) {
-		// Devuelve el nuevo post insertado
 		return result.rows[0];
 	  } else {
 		throw new Error('Error al insertar el post. No se devolvió ningún resultado.');
@@ -64,8 +63,8 @@ const insertPost = async (post) => {
 	  throw { code: 404, message: 'No se encontró usuario con ese email' };
 	}
   
-	const usuario = rows[0]; // Extraer el primer usuario del resultado
-	console.log('Usuario:', usuario); // Agrega esta línea para imprimir el usuario en la consola
+	const usuario = rows[0]; 
+	console.log('Usuario:', usuario); 
 	return usuario;
   };
 const getPostById = async (postId) => {
@@ -74,7 +73,7 @@ const getPostById = async (postId) => {
 	const { rows, rowCount } = await pool.query(consulta, values);
   
 	if (!rowCount) {
-	  return null; // No se encontró ningún post con ese ID
+	  return null; 
 	}
   
 	return rows[0];

@@ -26,7 +26,7 @@ app.get('/usuarios/:id', async (req, res) => {
   });
 app.get('/all-posts', async (req, res) => {
 	try {
-	  const posts = await getAllPosts(); // Utiliza la nueva función
+	  const posts = await getAllPosts(); 
 	  res.json(posts);
 	} catch (error) {
 	  console.error('Error al obtener todos los posts:', error.message);
@@ -38,7 +38,6 @@ app.get('/posts', verifyToken, async (req, res) => {
 	  const token = req.header('Authorization').split('Bearer ')[1];
 	  const { email } = jwt.decode(token);
 	  
-	  // Obtener el ID del usuario autenticado
 	  const usuario = await getDataUser(email);
   
 	  const posts = await getPosts(usuario.id);
