@@ -9,8 +9,10 @@ CREATE TABLE posts (
 );
 CREATE TABLE usuarios (
 	id SERIAL PRIMARY KEY,
+  numero VARCHAR(225),
   nombre VARCHAR(50)
 	email VARCHAR(255),
 	password TEXT
 );
+
 INSERT INTO posts (id, titulo, img, descripcion, precio) VALUES (1, 'auto rojo clasico', 'https://docs.gimp.org/2.8/es/images/tutorials/quickie-jpeg-100.jpg', 'Auto clasico de lujo bien cuidado por años', 3500000  );

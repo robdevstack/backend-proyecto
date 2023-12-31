@@ -22,9 +22,9 @@ const getPosts = async (usuarioId) => {
 	return result.rows;
   };
 
-const insertPost = async (post) => {
+  const insertPost = async (post) => {
 	try {
-	  const usuarioId = post.usuario_id; 
+	  const usuarioId = post.usuario_id; // Asume que usuario_id está en el objeto post
 	  const { titulo, img, descripcion, precio } = post;
   
 	  const consulta = 'INSERT INTO posts (usuario_id, titulo, img, descripcion, precio) VALUES ($1, $2, $3, $4, $5) RETURNING *';
@@ -33,6 +33,7 @@ const insertPost = async (post) => {
 	  const result = await pool.query(consulta, values);
   
 	  if (result.rows.length > 0) {
+		// Devuelve el nuevo post insertado
 		return result.rows[0];
 	  } else {
 		throw new Error('Error al insertar el post. No se devolvió ningún resultado.');
@@ -42,9 +43,10 @@ const insertPost = async (post) => {
 	  throw error;
 	}
   };
+  
   const getDataUserById = async (userId) => {
 	const values = [userId];
-	const consulta = 'SELECT id, nombre, email FROM usuarios WHERE id = $1';
+	const consulta = 'SELECT id, nombre, email, numero FROM usuarios WHERE id = $1';
 	const { rows, rowCount } = await pool.query(consulta, values);
   
 	if (!rowCount) {
@@ -56,48 +58,48 @@ const insertPost = async (post) => {
   };
   const getDataUser = async (email) => {
 	const values = [email];
-	const consulta = 'SELECT id, nombre, email FROM usuarios WHERE email = $1';
+	const consulta = 'SELECT id, nombre, email, numero FROM usuarios WHERE email = $1';
 	const { rows, rowCount } = await pool.query(consulta, values);
   
 	if (!rowCount) {
 	  throw { code: 404, message: 'No se encontró usuario con ese email' };
 	}
   
-	const usuario = rows[0]; 
-	console.log('Usuario:', usuario); 
+	const usuario = rows[0]; // Extraer el primer usuario del resultado
+	console.log('Usuario:', usuario); // Agrega esta línea para imprimir el usuario en la consola
 	return usuario;
   };
 const getPostById = async (postId) => {
-	const values = [postId];
-	const consulta = 'SELECT * FROM posts WHERE id = $1';
-	const { rows, rowCount } = await pool.query(consulta, values);
-  
-	if (!rowCount) {
-	  return null; 
-	}
-  
-	return rows[0];
-  };
+const values = [postId];
+const consulta = 'SELECT * FROM posts WHERE id = $1';
+const { rows, rowCount } = await pool.query(consulta, values);
+
+if (!rowCount) {
+  return null; // No se encontró ningún post con ese ID
+}
+
+return rows[0];
+};
 const verifyCrede = async (email, password) => {
-	const values = [email];
-	const consulta = 'SELECT * FROM usuarios WHERE email = $1';
-	const {
-		rows: [usuario],
-		rowCount,
-	} = await pool.query(consulta, values);
-	const { password: passwordCrypt } = usuario;
-	const passwordCorrecta = bcrypt.compareSync(password, passwordCrypt);
-	if (!passwordCorrecta || !rowCount) {
-		throw { code: 401, message: 'Email o contraseña incorrecta' };
-	}
+const values = [email];
+const consulta = 'SELECT * FROM usuarios WHERE email = $1';
+const {
+	rows: [usuario],
+	rowCount,
+} = await pool.query(consulta, values);
+const { password: passwordCrypt } = usuario;
+const passwordCorrecta = bcrypt.compareSync(password, passwordCrypt);
+if (!passwordCorrecta || !rowCount) {
+	throw { code: 401, message: 'Email o contraseña incorrecta' };
+}
 };
 
 const registrarUsuario = async (usuario) => {
-    let { email, password, nombre } = usuario;
-    const passwordCrypt = bcrypt.hashSync(password);
-    const values = [email, passwordCrypt, nombre];
-    const consulta = 'INSERT INTO usuarios (email, password, nombre) values ($1, $2, $3)';
-    await pool.query(consulta, values);
+let { email, password, nombre, numero } = usuario;
+const passwordCrypt = bcrypt.hashSync(password);
+const values = [email, passwordCrypt, nombre, numero];
+const consulta = 'INSERT INTO usuarios (email, password, nombre, numero) values ($1, $2, $3, $4)';
+await pool.query(consulta, values);
 };
 
-module.exports = { getPosts, getDataUserById, getPostById, insertPost, getAllPosts, verifyCrede, getDataUser, registrarUsuario };
+module.exports = { getDataUserById, getPosts, getAllPosts, getPostById, insertPost, verifyCrede, getDataUser, registrarUsuario };
